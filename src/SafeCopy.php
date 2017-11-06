@@ -19,6 +19,7 @@ class SafeCopy
     private $storage;
 
     private $task;
+    private $cleanup;
     private $fail;
 
     public function __construct($source, $dest, $storage = '/tmp/safe-copy/')

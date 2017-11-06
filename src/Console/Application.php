@@ -10,18 +10,29 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends Console
 {
+    /**
+     * @var \DBSeller\SafeCopy\Console\Command\Copy
+     */
+    private $singleCommand;
+
+    /**
+     * @param string $name    The name of the application
+     * @param string $version The version of the application
+     */
     public function __construct($name, $version)
     {
         parent::__construct($name, $version);
         $this->createSingleCommand();
     }
 
+    /**
+     * Define command copy to default command 
+     */
     private function createSingleCommand()
     {
-        $this->singleCommand = new Command\Copy($this->getName());
-        $this->add($this->singleCommand);
-        $this->setDefaultCommand($this->singleCommand->getName());
-        return $this->singleCommand;
+        $command = new Command\Copy($this->getName());
+        $this->add($command);
+        $this->singleCommand = $command;
     }
 
     /**
