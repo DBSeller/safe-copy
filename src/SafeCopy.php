@@ -10,21 +10,22 @@ use \DBSeller\SafeCopy\Task\Validate as ValidateTask;
 use \DBSeller\SafeCopy\Task\Backup as BackupTask;
 use \DBSeller\SafeCopy\Task\Copy as CopyTask;
 use \DBSeller\SafeCopy\Task\Restore as RestoreTask;
+use \DBSeller\SafeCopy\Task\Cleanup as CleanupTask;
 
 class SafeCopy
 {
     private $source;
     private $dest;
-    private $store;
+    private $storage;
 
     private $task;
     private $fail;
 
-    public function __construct($source, $dest, $store = '/tmp/safe-copy/')
+    public function __construct($source, $dest, $storage = '/tmp/safe-copy/')
     {
         $this->source = $source;
         $this->dest = $dest;
-        $this->store = $store;
+        $this->storage = $storage;
         $this->init();
     }
 
@@ -36,7 +37,7 @@ class SafeCopy
         $context = new Context();
         $context->set('source', $this->source);
         $context->set('dest', $this->dest);
-        $context->set('store', $this->store);
+        $context->set('storage', $this->storage);
 
         $loader = new LoaderTask($context);
         $validate = new ValidateTask($context);
@@ -45,6 +46,8 @@ class SafeCopy
 
         $this->fail = new RestoreTask($context);
         $copy->fail($this->fail);
+
+        $this->cleanup = new CleanupTask($context);
 
         $this->task = new TaskGroup(array(
             $loader, $validate, $backup, $copy
@@ -74,7 +77,7 @@ class SafeCopy
     {
         $runner = new Runner();
         $runner->run($this->task);
-        //$runner->run($this->cleanup);
+        $runner->run($this->cleanup);
         return true;
     }
 

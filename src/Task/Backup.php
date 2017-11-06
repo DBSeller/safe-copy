@@ -17,7 +17,7 @@ class Backup extends Base
     protected function doRun()
     {
         $fs = new Filesystem();
-        $store = $this->context->get('store');
+        $storage = $this->context->get('storage');
         $id = basename($this->context->get('source'));
 
         $files = array();
@@ -30,13 +30,13 @@ class Backup extends Base
                 continue;
             }
 
-            $fs->copy($sourceFile, $store . $id . "/" . $file);
+            $fs->copy($sourceFile, $storage . $id . "/" . $file);
             $files[] = $file;
         }
 
         $this->context->set('backup', array(
             'files' => $files,
-            'path' => $store . $id . "/"
+            'path' => $storage . $id . "/"
         ));
     }
 }

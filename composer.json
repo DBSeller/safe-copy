@@ -13,6 +13,9 @@
             "email": "vitor@dbseller.com.br"
         }
     ],
+    "bin": [
+        "bin/safe-copy"
+    ],
     "autoload": {
         "psr-4": {
             "DBSeller\\SafeCopy\\" : "src",
@@ -23,7 +26,8 @@
         "php": "^5.3",
         "psr/container": "^1.0",
         "symfony/finder": "^2.8",
-        "symfony/filesystem": "^2.8"
+        "symfony/filesystem": "^2.8",
+        "symfony/console": "^2.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8"
