@@ -18,8 +18,6 @@ class Restore extends Base
 
     protected function doRun()
     {
-        echo "Restore" . PHP_EOL;
-
         $fs = new Filesystem();
 
         $files = $this->context->get('files');
@@ -45,7 +43,6 @@ class Restore extends Base
 
         // remover diretorio vazio
         $this->recursiveRemovePaths(array_unique($removePaths));
-
     }
 
     private function recursiveRemovePaths($paths)
@@ -56,7 +53,6 @@ class Restore extends Base
                 continue;
             }
 
-            echo "$path" , PHP_EOL;
             rmdir($path);
             $this->recursiveRemovePaths(array(dirname($path)));
         }

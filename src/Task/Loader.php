@@ -16,7 +16,6 @@ class Loader extends Base
 
     protected function doRun()
     {
-        echo "Loading" . PHP_EOL;
         $this->loadFiles();
     }
 

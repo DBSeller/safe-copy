@@ -16,8 +16,6 @@ class Backup extends Base
 
     protected function doRun()
     {
-        echo "Backuping" . PHP_EOL;
-
         $fs = new Filesystem();
         $store = $this->context->get('store');
         $id = basename($this->context->get('source'));

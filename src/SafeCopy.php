@@ -2,11 +2,9 @@
 
 namespace DBSeller\SafeCopy;
 
-use \DBSeller\TaskRunner\Task\Collection as TaskCollection;
 use \DBSeller\TaskRunner\Task\Callback as TaskCallback;
 use \DBSeller\TaskRunner\Task\Group as TaskGroup;
 use \DBSeller\TaskRunner\Runner;
-
 use \DBSeller\SafeCopy\Task\Loader as LoaderTask;
 use \DBSeller\SafeCopy\Task\Validate as ValidateTask;
 use \DBSeller\SafeCopy\Task\Backup as BackupTask;

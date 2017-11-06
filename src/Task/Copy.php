@@ -16,8 +16,6 @@ class Copy extends Base
 
     protected function doRun()
     {
-        echo "Copy" . PHP_EOL;
-
         $fs = new Filesystem();
 
         $source = $this->context->get('source');

@@ -15,7 +15,6 @@ class Validate extends Base
 
     protected function doRun()
     {
-        echo "Validating" . PHP_EOL;
         $this->permissions();
     }
 
