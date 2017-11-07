@@ -2,41 +2,37 @@
 
 namespace DBSeller\SafeCopy\Task;
 
-use DBSeller\TaskRunner\Task\Base;
-use Symfony\Component\Filesystem\Filesystem;
-
 class Backup extends Base
 {
-    private $context;
-
-    public function __construct($context)
-    {
-        $this->context = $context;
-    }
-
     protected function doRun()
     {
-        $fs = new Filesystem();
-        $storage = $this->context->get('storage');
-        $id = basename($this->context->get('source'));
+        $fs = $this->container->get('filesystem');
+        $context = $this->container->get('context');
+        $id = basename($context->get('source'));
+        $storage = $context->get('storage') . $id . "/";
+
+        $logger = $this->container->get('logger');
+        $logger->info('executing backup task');
+        $logger->debug(sprintf(' - backup path %s', $storage));
 
         $files = array();
-        foreach ($this->context->get('files') as $file) {
+        foreach ($context->get('files') as $file) {
 
-            $sourceFile = $this->context->get('source') . $file;
-            $destFile = $this->context->get('dest') . $file;
+            $sourceFile = $context->get('source') . $file;
+            $destFile = $context->get('dest') . $file;
 
             if (!file_exists($destFile)) {
                 continue;
             }
 
-            $fs->copy($sourceFile, $storage . $id . "/" . $file);
+            $logger->debug(sprintf(' - copy file %s', $file));
+            $fs->copy($sourceFile, $storage . $file);
             $files[] = $file;
         }
 
-        $this->context->set('backup', array(
+        $context->set('backup', array(
             'files' => $files,
-            'path' => $storage . $id . "/"
+            'path' => $storage
         ));
     }
 }

@@ -2,22 +2,20 @@
 
 namespace DBSeller\SafeCopy\Task;
 
-use DBSeller\TaskRunner\Task\Base;
 use Symfony\Component\Filesystem\Filesystem;
+use Psr\Container\ContainerInterface;
 
 class Cleanup extends Base
 {
-    private $context;
-
-    public function __construct($context)
-    {
-        $this->context = $context;
-    }
-
     protected function doRun()
     {
-        $fs = new Filesystem();
-        $backup = $this->context->get('backup');
+        $fs = $this->container->get('filesystem');
+        $backup = $this->container->get('context')->get('backup');
+
+        $logger = $this->container->get('logger');
+        $logger->info('executing cleanup task');
+        $logger->debug(sprintf(' - remove path %s', $backup['path']));
+
         $fs->remove($backup['path']);
     }
 }

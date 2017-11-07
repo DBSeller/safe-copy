@@ -2,17 +2,8 @@
 
 namespace DBSeller\SafeCopy\Task;
 
-use \DBSeller\TaskRunner\Task\Base;
-
 class Validate extends Base
 {
-    private $context;
-
-    public function __construct($context)
-    {
-        $this->context = $context;
-    }
-
     protected function doRun()
     {
         $this->permissions();
@@ -20,10 +11,15 @@ class Validate extends Base
 
     public function permissions()
     {
-        $dest = $this->context->get('dest');
+        $logger = $this->container->get('logger');
+        $context = $this->container->get('context');
+        $dest = $context->get('dest');
+
+        $logger->info('executing validate task');
+
         $this->permissionDirectory($dest);
 
-        foreach ($this->context->get('files') as $file) {
+        foreach ($context->get('files') as $file) {
 
             $destPath = $dest . $file;
 

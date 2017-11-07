@@ -2,24 +2,22 @@
 
 namespace DBSeller\SafeCopy\Task;
 
-use DBSeller\TaskRunner\Task\Base;
-use \Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Filesystem;
+use Psr\Container\ContainerInterface;
 
 class Copy extends Base
 {
-    private $context;
-
-    public function __construct($context)
-    {
-        $this->context = $context;
-    }
-
     protected function doRun()
     {
-        $fs = new Filesystem();
+        $fs = $this->container->get('filesystem');
+        $context = $this->container->get('context');
+        $source = $context->get('source');
+        $dest = $context->get('dest');
 
-        $source = $this->context->get('source');
-        $dest = $this->context->get('dest');
+        $logger = $this->container->get('logger');
+        $logger->info('executing copy task');
+        $logger->debug(sprintf(' - source path %s', $dest));
+
         $fs->mirror($source, $dest);
     }
 }

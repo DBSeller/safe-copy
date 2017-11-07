@@ -7,6 +7,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
 class Copy extends Command
 {
@@ -24,14 +25,11 @@ class Copy extends Command
         $source = $input->getArgument('source');
         $dest = $input->getArgument('dest');
         $storage = $input->getArgument('storage');
-
-        if ($output->getVerbosity() >= Output::VERBOSITY_VERBOSE) {
-            $output->writeln(sprintf("<comment> source</comment>: %s", $source));
-            $output->writeln(sprintf("<comment>   dest</comment>: %s", $dest));
-            $output->writeln(sprintf("<comment>storage</comment>: %s", $storage));
-        }
-
         $safeCopy = new SafeCopy($source, $dest, $storage);
+
+        $logger = $safeCopy->container()->get('logger');
+        $logger->pushHandler(new ConsoleHandler($output));
+
         $safeCopy->execute();
     }
 }

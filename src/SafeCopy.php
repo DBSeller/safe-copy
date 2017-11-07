@@ -2,15 +2,16 @@
 
 namespace DBSeller\SafeCopy;
 
-use \DBSeller\TaskRunner\Task\Callback as TaskCallback;
-use \DBSeller\TaskRunner\Task\Group as TaskGroup;
-use \DBSeller\TaskRunner\Runner;
-use \DBSeller\SafeCopy\Task\Loader as LoaderTask;
-use \DBSeller\SafeCopy\Task\Validate as ValidateTask;
-use \DBSeller\SafeCopy\Task\Backup as BackupTask;
-use \DBSeller\SafeCopy\Task\Copy as CopyTask;
-use \DBSeller\SafeCopy\Task\Restore as RestoreTask;
-use \DBSeller\SafeCopy\Task\Cleanup as CleanupTask;
+use DBSeller\TaskRunner\Task\Callback as TaskCallback;
+use DBSeller\TaskRunner\Task\Group as TaskGroup;
+use DBSeller\TaskRunner\Runner;
+use DBSeller\SafeCopy\Task\Loader as LoaderTask;
+use DBSeller\SafeCopy\Task\Validate as ValidateTask;
+use DBSeller\SafeCopy\Task\Backup as BackupTask;
+use DBSeller\SafeCopy\Task\Copy as CopyTask;
+use DBSeller\SafeCopy\Task\Restore as RestoreTask;
+use DBSeller\SafeCopy\Task\Cleanup as CleanupTask;
+use Symfony\Component\Filesystem\Filesystem;
 
 class SafeCopy
 {
@@ -18,6 +19,8 @@ class SafeCopy
     private $dest;
     private $storage;
 
+    private $container;
+    
     private $task;
     private $cleanup;
     private $fail;
@@ -30,29 +33,47 @@ class SafeCopy
         $this->init();
     }
 
+    public function container()
+    {
+        return $this->container;
+    }
+
     public function init()
     {
         $this->validate();
         $this->sanitize();
 
+        $container = new Container();
+
+        $container->set('filesystem', function() {
+            return new Filesystem(); 
+        });
+
+        $container->set('logger', function() {
+            return new \Monolog\Logger('SafeCopy');
+        });
+        
         $context = new Context();
         $context->set('source', $this->source);
         $context->set('dest', $this->dest);
         $context->set('storage', $this->storage);
+        $container->set('context', $context);
 
-        $loader = new LoaderTask($context);
-        $validate = new ValidateTask($context);
-        $backup = new BackupTask($context);
-        $copy = new CopyTask($context);
+        $loader = new LoaderTask($container);
+        $validate = new ValidateTask($container);
+        $backup = new BackupTask($container);
+        $copy = new CopyTask($container);
 
-        $this->fail = new RestoreTask($context);
+        $this->fail = new RestoreTask($container);
         $copy->fail($this->fail);
 
-        $this->cleanup = new CleanupTask($context);
+        $this->cleanup = new CleanupTask($container);
 
         $this->task = new TaskGroup(array(
             $loader, $validate, $backup, $copy
         ));
+
+        $this->container = $container;
     }
 
     public function fail(\Closure $callback)

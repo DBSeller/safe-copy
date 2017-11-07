@@ -2,28 +2,22 @@
 
 namespace DBSeller\SafeCopy\Task;
 
-use \DBSeller\TaskRunner\Task\Base;
-use \Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Filesystem;
+use Psr\Container\ContainerInterface;
 
 class Restore extends Base
 {
-    private $context;
-
-    private $fs;
-
-    public function __construct($context)
-    {
-        $this->context = $context;
-    }
-
     protected function doRun()
     {
-        $fs = new Filesystem();
+        $fs = $this->container->get('filesystem');
+        $context = $this->container->get('context');
+        $files = $context->get('files');
+        $backup = $context->get('backup');
+        $dest = $context->get('dest');
 
-        $files = $this->context->get('files');
-        $backup = $this->context->get('backup');
-
-        $dest = $this->context->get('dest');
+        $logger = $this->container->get('logger');
+        $logger->info('executing restore task');
+        $logger->debug(sprintf(' - restore from path %s', $backup['path']));
 
         // remove
         $remove = array_diff($files, $backup['files']);
@@ -38,6 +32,7 @@ class Restore extends Base
 
         foreach ($remove as $file) {
             $removePaths[] = dirname($dest . $file);
+            $logger->debug(sprintf(" - remove %s", $file));
             $fs->remove($dest . $file);
         }
 
@@ -49,7 +44,7 @@ class Restore extends Base
     {
         foreach ($paths as $path) {
 
-            if (!$this->isEmptyDir($path)) {
+            if (!is_dir($path) || !$this->isEmptyDir($path)) {
                 continue;
             }
 
@@ -63,7 +58,7 @@ class Restore extends Base
         $dir = dir($path);
         $result = true;
 
-        while (false !== ($entry = $dir->read()) ) {
+        while (false !== ($entry = $dir->read())) {
 
             if ($entry != "." && $entry != "..") {
                 $result = false;
