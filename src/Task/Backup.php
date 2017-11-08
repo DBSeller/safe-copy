@@ -26,7 +26,7 @@ class Backup extends Base
             }
 
             $logger->debug(sprintf(' - copy file %s', $file));
-            $fs->copy($sourceFile, $storage . $file);
+            $fs->copy($sourceFile, $storage . $file, true);
             $files[] = $file;
         }
 

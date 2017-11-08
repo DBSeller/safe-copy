@@ -18,6 +18,6 @@ class Copy extends Base
         $logger->info('executing copy task');
         $logger->debug(sprintf(' - source path %s', $dest));
 
-        $fs->mirror($source, $dest);
+        $fs->mirror($source, $dest, array('override' => true));
     }
 }

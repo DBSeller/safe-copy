@@ -27,7 +27,7 @@ class Restore extends Base
         $update = array_intersect($files, $backup['files']);
 
         foreach ($update as $file) {
-            $fs->copy($backup['path'] . $file, $dest . $file);
+            $fs->copy($backup['path'] . $file, $dest . $file, true);
         }
 
         foreach ($remove as $file) {
