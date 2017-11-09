@@ -2,24 +2,27 @@
 
 namespace DBSeller\SafeCopy\Task;
 
+use \DBSeller\TaskRunner\ExecutionContext;
+
 class Backup extends Base
 {
-    protected function doRun()
+    protected function doRun(ExecutionContext $context)
     {
+        $shared = $context->shared();
+
         $fs = $this->container->get('filesystem');
-        $context = $this->container->get('context');
-        $id = basename($context->get('source'));
-        $storage = $context->get('storage') . $id . "/";
+        $id = basename($shared->get('source'));
+        $storage = $shared->get('storage') . $id . "/";
 
         $logger = $this->container->get('logger');
         $logger->info('executing backup task');
         $logger->debug(sprintf(' - backup path %s', $storage));
 
         $files = array();
-        foreach ($context->get('files') as $file) {
+        foreach ($shared->get('files') as $file) {
 
-            $sourceFile = $context->get('source') . $file;
-            $destFile = $context->get('dest') . $file;
+            $sourceFile = $shared->get('source') . $file;
+            $destFile = $shared->get('dest') . $file;
 
             if (!file_exists($destFile)) {
                 continue;
@@ -30,7 +33,7 @@ class Backup extends Base
             $files[] = $file;
         }
 
-        $context->set('backup', array(
+        $shared->set('backup', array(
             'files' => $files,
             'path' => $storage
         ));

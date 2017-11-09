@@ -4,24 +4,21 @@ namespace DBSeller\SafeCopy\Task;
 
 use Symfony\Component\Finder\Finder;
 use Psr\Container\ContainerInterface;
+use \DBSeller\TaskRunner\ExecutionContext;
+
 
 class Loader extends Base
 {
-    protected function doRun()
-    {
-        $this->loadFiles();
-    }
-
-    private function loadFiles()
+    protected function doRun(ExecutionContext $context)
     {
         $files = array();
         $logger = $this->container->get('logger');
-        $context = $this->container->get('context');
+        $shared = $context->shared();
         $logger->info('executing loader task');
-        $logger->debug(sprintf(' - load files from source %s', $context->get('source')));
+        $logger->debug(sprintf(' - load files from source %s', $shared->get('source')));
 
         $finder = new Finder();
-        $finder->files()->in($context->get('source'));
+        $finder->files()->in($shared->get('source'));
 
         foreach ($finder as $file) {
 
@@ -29,6 +26,6 @@ class Loader extends Base
             $files[] = $file->getRelativePathname();
         }
 
-        $context->set('files', $files);
+        $shared->set('files', $files);
     }
 }

@@ -4,16 +4,17 @@ namespace DBSeller\SafeCopy\Task;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Psr\Container\ContainerInterface;
+use \DBSeller\TaskRunner\ExecutionContext;
 
 class Restore extends Base
 {
-    protected function doRun()
+    protected function doRun(ExecutionContext $context)
     {
         $fs = $this->container->get('filesystem');
-        $context = $this->container->get('context');
-        $files = $context->get('files');
-        $backup = $context->get('backup');
-        $dest = $context->get('dest');
+        $shared = $context->shared();
+        $files = $shared->get('files');
+        $backup = $shared->get('backup');
+        $dest = $shared->get('dest');
 
         $logger = $this->container->get('logger');
         $logger->info('executing restore task');

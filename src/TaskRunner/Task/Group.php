@@ -2,6 +2,8 @@
 
 namespace DBSeller\TaskRunner\Task;
 
+use \DBSeller\TaskRunner\ExecutionContext;
+
 class Group extends Base
 {
     private $tasks = array();
@@ -20,11 +22,11 @@ class Group extends Base
         return $this;
     }
 
-    public function doRun()
+    public function doRun(ExecutionContext $context)
     {
         $result = array();
         foreach ($this->tasks as $task) {
-            $result[] = $task->run();
+            $result[] = $task->run($context);
         }
         return $result;
     }

@@ -2,6 +2,8 @@
 
 namespace DBSeller\TaskRunner;
 
+use \DBSeller\TaskRunner\ExecutionContext;
+
 interface TaskInterface 
 {
     const STATE_IDLE = 0;
@@ -14,5 +16,5 @@ interface TaskInterface
     public function fail(TaskInterface $task = null);
     public function before(TaskInterface $task = null);
     public function after(TaskInterface $task = null);
-    public function run();
+    public function run(ExecutionContext $context);
 }

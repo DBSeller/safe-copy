@@ -2,7 +2,8 @@
 
 namespace DBSeller\TaskRunner\Task;
 
-use DBSeller\TaskRunner\TaskInterface;
+use \DBSeller\TaskRunner\TaskInterface;
+use \DBSeller\TaskRunner\ExecutionContext;
 
 abstract class Base implements TaskInterface
 {
@@ -12,14 +13,14 @@ abstract class Base implements TaskInterface
     protected $after = array();
     protected $state = 0;
 
-    abstract protected function doRun();
+    abstract protected function doRun(ExecutionContext $context);
 
-    public function run()
+    public function run(ExecutionContext $context)
     {
         $this->state = self::STATE_RUNNING;
         $result = null;
         try {
-            $result = $this->doRun();
+            $result = $this->doRun($context);
         } catch (\Exception $e) {
             $this->state = self::STATE_FAIL;
             throw $e;

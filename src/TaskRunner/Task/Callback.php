@@ -2,6 +2,8 @@
 
 namespace DBSeller\TaskRunner\Task;
 
+use \DBSeller\TaskRunner\ExecutionContext;
+
 class Callback extends Base
 {
     private $callback;
@@ -11,8 +13,8 @@ class Callback extends Base
         $this->callback = $callback;
     }
 
-    protected function doRun()
+    protected function doRun(ExecutionContext $context)
     {
-        return call_user_func($this->callback);
+        return call_user_func_array($this->callback, array($context));
     }
 }

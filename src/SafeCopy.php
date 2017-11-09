@@ -5,6 +5,7 @@ namespace DBSeller\SafeCopy;
 use DBSeller\TaskRunner\Task\Callback as TaskCallback;
 use DBSeller\TaskRunner\Task\Group as TaskGroup;
 use DBSeller\TaskRunner\Runner;
+use DBSeller\TaskRunner\SharedContext;
 use DBSeller\SafeCopy\Task\Loader as LoaderTask;
 use DBSeller\SafeCopy\Task\Validate as ValidateTask;
 use DBSeller\SafeCopy\Task\Backup as BackupTask;
@@ -52,12 +53,6 @@ class SafeCopy
         $container->set('logger', function() {
             return new \Monolog\Logger('SafeCopy');
         });
-        
-        $context = new Context();
-        $context->set('source', $this->source);
-        $context->set('dest', $this->dest);
-        $context->set('storage', $this->storage);
-        $container->set('context', $context);
 
         $loader = new LoaderTask($container);
         $validate = new ValidateTask($container);
@@ -97,9 +92,14 @@ class SafeCopy
 
     public function execute()
     {
+        $shared = new SharedContext();
+        $shared->set('source', $this->source);
+        $shared->set('dest', $this->dest);
+        $shared->set('storage', $this->storage);
+
         $runner = new Runner();
-        $runner->run($this->task);
-        $runner->run($this->cleanup);
+        $runner->run($this->task, $shared);
+        $runner->run($this->cleanup, $shared);
         return true;
     }
 
