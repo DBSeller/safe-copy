@@ -21,7 +21,6 @@ class Backup extends Base
         $files = array();
         foreach ($shared->get('files') as $file) {
 
-            $sourceFile = $shared->get('source') . $file;
             $destFile = $shared->get('dest') . $file;
 
             if (!file_exists($destFile)) {
@@ -29,7 +28,7 @@ class Backup extends Base
             }
 
             $logger->debug(sprintf(' - copy file %s', $file));
-            $fs->copy($sourceFile, $storage . $file, true);
+            $fs->copy($destFile, $storage . $file, true);
             $files[] = $file;
         }
 

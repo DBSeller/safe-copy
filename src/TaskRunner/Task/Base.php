@@ -13,14 +13,19 @@ abstract class Base implements TaskInterface
     protected $after = array();
     protected $state = 0;
 
+    public function __invoke()
+    {
+        return call_user_func_array(array($this, 'run'), func_get_args());
+    }
+
     abstract protected function doRun(ExecutionContext $context);
 
-    public function run(ExecutionContext $context)
+    public function run(ExecutionContext $context = null)
     {
         $this->state = self::STATE_RUNNING;
         $result = null;
         try {
-            $result = $this->doRun($context);
+            $result = $this->doRun($context ?: new ExecutionContext());
         } catch (\Exception $e) {
             $this->state = self::STATE_FAIL;
             throw $e;

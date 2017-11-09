@@ -18,6 +18,8 @@ class Loader extends Base
         $logger->debug(sprintf(' - load files from source %s', $shared->get('source')));
 
         $finder = new Finder();
+        $finder->ignoreDotFiles(false);
+        $finder->ignoreVCS(false);
         $finder->files()->in($shared->get('source'));
 
         foreach ($finder as $file) {
