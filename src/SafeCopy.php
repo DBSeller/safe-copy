@@ -4,6 +4,7 @@ namespace DBSeller\SafeCopy;
 
 use DBSeller\TaskRunner\Task\Callback as TaskCallback;
 use DBSeller\TaskRunner\Task\Group as TaskGroup;
+use DBSeller\TaskRunner\TaskInterface;
 use DBSeller\TaskRunner\Runner;
 use DBSeller\TaskRunner\SharedContext;
 use DBSeller\SafeCopy\Task\Loader as LoaderTask;
@@ -71,19 +72,19 @@ class SafeCopy
         $this->container = $container;
     }
 
-    public function fail(\Closure $callback)
+    public function fail(TaskInterface $callback)
     {
         $task = new TaskCallback($callback);
         $this->fail->after($task);
     }
 
-    public function before(\Closure $callback)
+    public function before(TaskInterface $callback)
     {
         $task = new TaskCallback($callback);
         $this->task->before($task);
     }
 
-    public function after(\Closure $callback)
+    public function after(TaskInterface $callback)
     {
         $task = new TaskCallback($callback);
         $task->fail($this->fail);
