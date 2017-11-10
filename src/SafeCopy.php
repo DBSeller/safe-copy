@@ -72,21 +72,18 @@ class SafeCopy
         $this->container = $container;
     }
 
-    public function fail(TaskInterface $callback)
+    public function fail(TaskInterface $task)
     {
-        $task = new TaskCallback($callback);
         $this->fail->after($task);
     }
 
-    public function before(TaskInterface $callback)
+    public function before(TaskInterface $task)
     {
-        $task = new TaskCallback($callback);
         $this->task->before($task);
     }
 
-    public function after(TaskInterface $callback)
+    public function after(TaskInterface $task)
     {
-        $task = new TaskCallback($callback);
         $task->fail($this->fail);
         $this->task->after($task);
     }
