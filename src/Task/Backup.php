@@ -15,7 +15,7 @@ class Backup extends Base
         $storage = $shared->get('storage') . $id . "/";
 
         $logger = $this->container->get('logger');
-        $logger->info('executing backup task');
+        $logger->info('executing task backup');
         $logger->debug(sprintf(' - backup path %s', $storage));
 
         $files = array();

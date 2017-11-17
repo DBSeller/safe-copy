@@ -12,7 +12,7 @@ class Validate extends Base
         $shared = $context->shared();
         $dest = $shared->get('dest');
 
-        $logger->info('executing validate task');
+        $logger->info('executing task validate');
 
         $this->permissionDirectory($dest);
 

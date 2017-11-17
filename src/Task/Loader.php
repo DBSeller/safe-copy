@@ -14,7 +14,7 @@ class Loader extends Base
         $files = array();
         $logger = $this->container->get('logger');
         $shared = $context->shared();
-        $logger->info('executing loader task');
+        $logger->info('executing task loader');
         $logger->debug(sprintf(' - load files from source %s', $shared->get('source')));
 
         $finder = new Finder();

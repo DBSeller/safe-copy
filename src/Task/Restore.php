@@ -17,7 +17,7 @@ class Restore extends Base
         $dest = $shared->get('dest');
 
         $logger = $this->container->get('logger');
-        $logger->info('executing restore task');
+        $logger->info('executing task restore');
         $logger->debug(sprintf(' - restore from path %s', $backup['path']));
 
         // remove

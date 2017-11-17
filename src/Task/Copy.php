@@ -17,7 +17,7 @@ class Copy extends Base
         $dest = $shared->get('dest');
 
         $logger = $this->container->get('logger');
-        $logger->info('executing copy task');
+        $logger->info('executing task copy');
         $logger->debug(sprintf(' - source path %s', $dest));
 
         $fs->mirror($source, $dest, null, array('override' => true));

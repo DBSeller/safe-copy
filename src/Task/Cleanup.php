@@ -15,7 +15,7 @@ class Cleanup extends Base
         $backup = $context->shared()->get('backup');
 
         $logger = $this->container->get('logger');
-        $logger->info('executing cleanup task');
+        $logger->info('executing task cleanup');
         $logger->debug(sprintf(' - remove path %s', $backup['path']));
 
         $fs->remove($backup['path']);
