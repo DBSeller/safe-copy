@@ -16,9 +16,12 @@ class Context
         $this->data[$key] = $value;
     }
 
-    public function get($key)
+    public function get($key, $default = null)
     {
-        return $this->data[$key];
+        if ($this->has($key)) {
+            return $this->data[$key];
+        }
+        return $default;
     }
 
     public function has($key)
