@@ -2,17 +2,18 @@
 
 namespace DBSeller\SafeCopy;
 
-use DBSeller\TaskRunner\Task\Callback as TaskCallback;
-use DBSeller\TaskRunner\Task\Group as TaskGroup;
-use DBSeller\TaskRunner\TaskInterface;
+use DBSeller\SafeCopy\Task\Backup as BackupTask;
+use DBSeller\SafeCopy\Task\Cleanup as CleanupTask;
+use DBSeller\SafeCopy\Task\Copy as CopyTask;
+use DBSeller\SafeCopy\Task\Loader as LoaderTask;
+use DBSeller\SafeCopy\Task\Restore as RestoreTask;
+use DBSeller\SafeCopy\Task\Validate as ValidateTask;
 use DBSeller\TaskRunner\Runner;
 use DBSeller\TaskRunner\SharedContext;
-use DBSeller\SafeCopy\Task\Loader as LoaderTask;
-use DBSeller\SafeCopy\Task\Validate as ValidateTask;
-use DBSeller\SafeCopy\Task\Backup as BackupTask;
-use DBSeller\SafeCopy\Task\Copy as CopyTask;
-use DBSeller\SafeCopy\Task\Restore as RestoreTask;
-use DBSeller\SafeCopy\Task\Cleanup as CleanupTask;
+use DBSeller\TaskRunner\Task\Group as TaskGroup;
+use DBSeller\TaskRunner\TaskInterface;
+use Exception;
+use Monolog\Logger;
 use Symfony\Component\Filesystem\Filesystem;
 
 class SafeCopy
@@ -25,6 +26,10 @@ class SafeCopy
     
     private $task;
     private $cleanup;
+
+    /**
+     * @var RestoreTask
+     */
     private $fail;
 
     public function __construct($source, $dest, $storage = '/tmp/safe-copy/')
@@ -52,7 +57,7 @@ class SafeCopy
         });
 
         $container->set('logger', function() {
-            return new \Monolog\Logger('SafeCopy');
+            return new Logger('SafeCopy');
         });
 
         $loader = new LoaderTask($container);
@@ -110,11 +115,11 @@ class SafeCopy
     private function validate()
     {
         if (!$this->validatePath($this->source)) {
-            throw new \Exception("Invalid source path.");
+            throw new Exception("Invalid source path.");
         }
 
         if (!$this->validatePath($this->dest)) {
-            throw new \Exception("Invalid dest path.");
+            throw new Exception("Invalid dest path.");
         }
     }
 
