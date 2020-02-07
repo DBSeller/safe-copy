@@ -23,7 +23,6 @@
         }
     },
     "require": {
-        "php": "^5.3",
         "psr/container": "^1.0",
         "symfony/finder": "^2.8",
         "symfony/filesystem": "^2.8",
